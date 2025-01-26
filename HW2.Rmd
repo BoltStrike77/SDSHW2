@@ -1,0 +1,92 @@
+---
+title: 'Homework #2'
+author: "Advay Vyas"
+output:
+  pdf_document:
+    toc: true
+urlcolor: blue
+linkcolor: red
+---
+
+```{r global_options, echo=FALSE}
+knitr::opts_chunk$set(fig.height=4, fig.width=6, fig.align = "center", warning=FALSE, echo=FALSE, tidy=TRUE, tidy.opts=list(width.cutoff=60))
+```
+
+------------------------------------------------------------------------
+
+```{r, results='hide', warning=FALSE, message=FALSE}
+# loading libraries
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(sas7bdat)
+library(rvest)
+library(stringr)
+```
+# Introduction
+I'm Advay Vyas, EID: av37899, and this is my submission for SDS 315 Statistical Thinking Homework #2. The GitHub repository for my code is at this [link](https://github.com/BoltStrike77/SDSHW2).
+
+# Problem 1
+```{r}
+profs = read.csv("profs.csv")
+ggprofs = ggplot(profs)
+```
+## Part A
+```{r}
+ggprofs + geom_histogram((aes(x=eval)), fill = 'skyblue', col = 'black', bins = 30) + labs(x="Evaluation score (1-5)", y="Frequency", title = "Distribution of Course Evaluation Score")
+```
+
+## Part B
+```{r, fig.width=7, fig.height = 3}
+ggprofs + geom_boxplot((aes(x=eval)), fill = 'skyblue', col = 'black') + labs(x="Evaluation score (1-5)", title = "Distribution of Course Evaluation Score by Native English-speaking Professor") + facet_wrap(~native, labeller = as_labeller(c('no' = "Foreign English-speaking",'yes' = "Native English-speaking"))) + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```
+
+## Part C
+```{r, fig.width=6, fig.height = 5}
+ggprofs + geom_histogram((aes(x=eval)), fill = 'skyblue', col = 'black', bins=30) + labs(x="Evaluation score (1-5)", y="Frequency", title = "Distribution of Course Evaluation Score by Gender") + facet_wrap(~gender, nrow = 2, ncol = 1, labeller = as_labeller(c('female' = "Female",'male' = "Male"))) 
+```
+
+## Part D
+```{r, fig.width=6, fig.height = 4}
+ggprofs + geom_point((aes(x=beauty, y=eval)), pch = 21, fill = 'skyblue', col = 'black') + labs(x="Average rating of attractiveness, mean = 0", y="Evaluation score (1-5)", 
+          title = "Physical Attractiveness vs. Course Evaluation Score") 
+```
+
+# Problem 2
+```{r}
+bikes = read.csv("bikeshare.csv")
+ggbikes = ggplot(bikes)
+```
+## Plot A
+```{r, fig.width=6, fig.height = 4}
+bikes %>% group_by(hr) %>% summarize(average = mean(total)) %>% ggplot() + geom_line((aes(x=hr, y=average)), size = 1.5, col = 'black') + labs(x="Hour (0-23)", y="Average total bike rentals", 
+          title = "Average total bike rentals by hour") 
+```
+
+## Plot B
+```{r, fig.width=6, fig.height = 5}
+bikes %>% group_by(hr, workingday) %>% summarize(average = mean(total), .groups = "drop_last") %>% ggplot() + geom_line((aes(x=hr, y=average)), size = 1.2, col = 'black') + labs(x="Hour (0-23)", y="Average total bike rentals", title = "Average total bike rentals by hour") + facet_wrap(~workingday, nrow=2, ncol=1, labeller = as_labeller(c('0' = "Non-working day",'1' = "Working day")))
+```
+
+## Plot C
+```{r, fig.width=6, fig.height = 5}
+bikes %>% filter(hr == 9) %>% group_by(hr, workingday, weathersit) %>% summarize(average = mean(total), .groups = "drop_last") %>% ggplot() + geom_col((aes(x=weathersit, y=average)), size = 1.2, fill = 'skyblue', col='black') + labs(x="Weather situation by intensity (1-4)", y="Average total bike rentals", title = "Average total bike rentals at 9am by weather") + facet_wrap(~workingday, labeller = as_labeller(c('0' = "Non-working day",'1' = "Working day")))
+```
+
+# Problem 3
+```{r}
+capmetro = read.csv("capmetro_UT.csv")
+ggprofs = ggplot(profs)
+```
+
+## Plot 1
+
+## Plot 2
+
+# Problem 4
+
+## Part A
+
+## Part B
+
+## Part C
