@@ -35,22 +35,28 @@ ggprofs = ggplot(profs)
 ```{r}
 ggprofs + geom_histogram((aes(x=eval)), fill = 'skyblue', col = 'black', bins = 30) + labs(x="Evaluation score (1-5)", y="Frequency", title = "Distribution of Course Evaluation Score")
 ```
+The above histogram demonstrates the distribution of course evaluation scores. The histogram has a peak at around 3.9/5 and has a significant left or negative skew. For this specific histogram, the median will be higher than the mean. Therefore, we might be able to infer that most students tend to rate high instead of normally distributing it around 3. As readers can see, most reviews are clustered around 4/5, even though it's likely most classes aren't rated that high.
 
 ## Part B
-```{r, fig.width=7, fig.height = 3}
-ggprofs + geom_boxplot((aes(x=eval)), fill = 'skyblue', col = 'black') + labs(x="Evaluation score (1-5)", title = "Distribution of Course Evaluation Score by Native English-speaking Professor") + facet_wrap(~native, labeller = as_labeller(c('no' = "Foreign English-speaking",'yes' = "Native English-speaking"))) + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```{r, fig.width = 7, fig.height = 6}
+ggprofs + geom_boxplot((aes(y=eval)), fill = 'skyblue', col = 'black') + labs(y="Evaluation score (1-5)", title = "Distribution of Course Evaluation Score by Native English-speaking Professor") + facet_wrap(~native, labeller = as_labeller(c('no' = "Foreign English-speaking",'yes' = "Native English-speaking"))) + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 ```
+
+These box plots demonstrate the distribution of course evaluation scores with both Native English-speaking lecturers and Foreign English-speaking lectures. The Native (right) box plot seems to see a higher trend in scoring with a median around 4 while the Foreign (left) box plot has a median around 3.7. In addition, the outliers on the Native (right) box plot might indicate that the Native distribution is similar to the Foreign distribution. However, since the box plots still overlap, there is likely no significant score change on English-speaking ability.
+
 
 ## Part C
 ```{r, fig.width=6, fig.height = 5}
 ggprofs + geom_histogram((aes(x=eval)), fill = 'skyblue', col = 'black', bins=30) + labs(x="Evaluation score (1-5)", y="Frequency", title = "Distribution of Course Evaluation Score by Gender") + facet_wrap(~gender, nrow = 2, ncol = 1, labeller = as_labeller(c('female' = "Female",'male' = "Male"))) 
 ```
+This histogram demonstrates the distribution of course evaluation scores by male and female gendered lecturers. The female (top) histogram seems to be more symmetrical yet still contains a slight left or negative skew. On the other hand, the male (bottom) histogram has more pronounced peaks at 4 and 4.3 with a sharper left or negative skew. While it can be seen that male lecturers tend to have higher scores, that assumption might not hold up - there might be much more male lecturers than female lecturers. Therefore, the conclusion is that male lecturers might have slightly higher scoring than female lecturers - though the reason may not be due to gender since there isn't enough data.
 
 ## Part D
 ```{r, fig.width=6, fig.height = 4}
 ggprofs + geom_point((aes(x=beauty, y=eval)), pch = 21, fill = 'skyblue', col = 'black') + labs(x="Average rating of attractiveness, mean = 0", y="Evaluation score (1-5)", 
           title = "Physical Attractiveness vs. Course Evaluation Score") 
 ```
+This scatter plot attempts to plot the correlation between lecturers' physical attractiveness assessed by a group of panelists against the lecturers' evaluation scores. As can be easily seen, there seems to be no correlation between attractiveness and course evaluation score. While more attractive lecturers might have higher evaluation scores and vice versa for lower attractiveness, the bulk of the data indicates no correlation. In addition, the small visible trend might be due to incorrect sample selection. In conclusion, there is no plausible correlation in this scatter plot.
 
 # Problem 2
 ```{r}
@@ -63,15 +69,22 @@ bikes %>% group_by(hr) %>% summarize(average = mean(total)) %>% ggplot() + geom_
           title = "Average total bike rentals by hour") 
 ```
 
+This line graph plots the average total bike rentals throughout the day. Readers can immediately sharp peaks around hour 7 and hour 14, which are 7 A.M. and 2 P.M. Those two sharp peaks can likely be explained by the morning rush hour and the lunch hour. The smaller peak around hour 16 (4 P.M.) is likely the evening rush hour. One possible explanation for the higher peak at lunch than the morning could be that some might prefer to rent a bike for lunch instead of navigating with their personal vehicle or public transportation. Therefore, this line graph shows a strong correlation with a typical day-to-day schedule.
+
 ## Plot B
 ```{r, fig.width=6, fig.height = 5}
 bikes %>% group_by(hr, workingday) %>% summarize(average = mean(total), .groups = "drop_last") %>% ggplot() + geom_line((aes(x=hr, y=average)), size = 1.2, col = 'black') + labs(x="Hour (0-23)", y="Average total bike rentals", title = "Average total bike rentals by hour") + facet_wrap(~workingday, nrow=2, ncol=1, labeller = as_labeller(c('0' = "Non-working day",'1' = "Working day")))
 ```
+This line graph attempts to improve upon the previous one by splitting the graph into working days (bottom) and non-working days (above). On this line graph, the working day (bottom) graph's peaks and dips are more pronounced, suggesting that the non-working day line graph may have been obscuring working day trends. This conclusion is furthered by the non-working day (top) graph's general lack of sharp peaks and dips. Therefore, this line graph makes a strong point for the case that total bike rentals are influenced by workers on working days.
 
 ## Plot C
 ```{r, fig.width=6, fig.height = 5}
-bikes %>% filter(hr == 9) %>% group_by(hr, workingday, weathersit) %>% summarize(average = mean(total), .groups = "drop_last") %>% ggplot() + geom_col((aes(x=weathersit, y=average)), fill = 'skyblue', col='black') + labs(x="Weather situation by intensity (1-4)", y="Average total bike rentals", title = "Average total bike rentals at 9am by weather") + facet_wrap(~workingday, labeller = as_labeller(c('0' = "Non-working day",'1' = "Working day")))
+bikes %>% filter(hr == 9) %>% group_by(hr, workingday, weathersit) %>% summarize(average = mean(total), .groups = "drop_last") %>% ggplot() + geom_col((aes(x=weathersit, y=average)), fill = 'skyblue', col='black') + labs(x="Weather situation by intensity (1-4)", y="Average total bike rentals", title = "Average total bike rentals at 9 A.M. by weather") + facet_wrap(~workingday, labeller = as_labeller(c('0' = "Non-working day",'1' = "Working day")))
 ```
+This bar graph represents average total bike rentals during 9 A.M, organized by a x-axis of weather intensity and split into non-working days (left) and working days (right). For the weather intensity, 1 indicates clear weather and few clouds, 2 indicates mist and clouds, 3 indicates light rain or thunderstorms, and 4 (not present in data-set) indicates heavy rain, snow, or thunderstorms.
+
+On the non-working day bar graph (left), there is a small decrease when weather intensifies from intensity 1 to 2. When the weather intensifies further to intensity 3, there is a large decrease in bike rentals. On the other hand, the working day bar graph (right) has almost no decrease from intensity 1 to intensity 2 and a large yet proportionally smaller decrease from intensity 2 to intensity 3. This might be due to workers having to be attendant at work regardless of low to moderate weather conditions, while non-working days not having the same stringent requirements. Therefore, we can likely assume that weather conditions have a larger effect on average bike rentals at 9 A.M. if it is a working day.
+
 
 # Problem 3
 ```{r}
@@ -94,7 +107,7 @@ capmetro %>% group_by(hour_of_day, day_of_week, month) %>% summarize(average = m
 
 ## Plot 2
 ```{r, fig.height=5, fig.width=7}
-ggmetro + geom_point((aes(x=temperature, y=boarding, fill=weekend)), pch=21, col = 'black') + labs(x="Temperature (Fahrenheit)", y="Total boardings", title = "CapMetro boardings vs. temperature") + facet_wrap(~hour_of_day)
+ggmetro + geom_point((aes(x=temperature, y=boarding, fill=weekend)), pch=21, col = 'black') + labs(x="Temperature (Fahrenheit)", y="Total boardings", title = "CapMetro boardings vs. temperature by hour of day") + facet_wrap(~hour_of_day)
 ```
 
 # Problem 4
