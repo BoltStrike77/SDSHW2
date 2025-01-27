@@ -70,7 +70,7 @@ bikes %>% group_by(hr, workingday) %>% summarize(average = mean(total), .groups 
 
 ## Plot C
 ```{r, fig.width=6, fig.height = 5}
-bikes %>% filter(hr == 9) %>% group_by(hr, workingday, weathersit) %>% summarize(average = mean(total), .groups = "drop_last") %>% ggplot() + geom_col((aes(x=weathersit, y=average)), size = 1.2, fill = 'skyblue', col='black') + labs(x="Weather situation by intensity (1-4)", y="Average total bike rentals", title = "Average total bike rentals at 9am by weather") + facet_wrap(~workingday, labeller = as_labeller(c('0' = "Non-working day",'1' = "Working day")))
+bikes %>% filter(hr == 9) %>% group_by(hr, workingday, weathersit) %>% summarize(average = mean(total), .groups = "drop_last") %>% ggplot() + geom_col((aes(x=weathersit, y=average)), fill = 'skyblue', col='black') + labs(x="Weather situation by intensity (1-4)", y="Average total bike rentals", title = "Average total bike rentals at 9am by weather") + facet_wrap(~workingday, labeller = as_labeller(c('0' = "Non-working day",'1' = "Working day")))
 ```
 
 # Problem 3
@@ -106,9 +106,16 @@ billboard = read.csv("billboard.csv")
 ```{r}
 topten = billboard %>% group_by(song, performer) %>% summarize(count = n(), .groups = 'drop_last') %>% arrange(desc(count))
 topten = topten[1:10,]
-knitr::kable(topten, caption = "Most popular songs by weeks on Billboard Top 100")
+knitr::kable(topten, caption = "Most popular songs by weeks on Billboard Top 100", col.names = c("Song", "Performer", "Weeks"))
 ```
 
 ## Part B
+```{r}
+unique(billboard[,c(5,12)]) %>% filter(year != 2021 & year!= 1958) %>% group_by(year) %>% summarize(count = n(), .groups = 'drop_last') %>% ggplot() + geom_line(aes(x=year, y=count), size = 1) + labs(x="Year", y="Unique songs", title = "Unique songs on the Billboard Top 100 by year")
 
+```
 ## Part C
+```{r, fig.width = 7}
+billboard %>% group_by(song, performer) %>% summarize(weeks = n(), .groups = 'drop_last') %>% filter(weeks >= 10) %>% group_by(performer) %>% summarize(count = n(), .groups = 'drop_last') %>% filter(count >= 30) %>% arrange(desc(count)) %>% ggplot() + geom_col((aes(x=reorder(performer, -count), y=count)), fill = 'skyblue', col='black') + labs(x="Artist", y="Ten-week hits", title = "Ten-week Billboard Top 100 hits by artist") + theme(axis.text.x = element_text(angle=45, size = 9, color = "black", face = "plain", vjust = 1, hjust = 1))
+
+```
