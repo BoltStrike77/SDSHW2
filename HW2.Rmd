@@ -76,16 +76,38 @@ bikes %>% filter(hr == 9) %>% group_by(hr, workingday, weathersit) %>% summarize
 # Problem 3
 ```{r}
 capmetro = read.csv("capmetro_UT.csv")
-ggprofs = ggplot(profs)
+
+capmetro = mutate(capmetro,
+day_of_week = factor(day_of_week,
+levels=c("Mon", "Tue", "Wed","Thu", "Fri", "Sat", "Sun")),
+month = factor(month,
+levels=c("Sep", "Oct","Nov")))
+
+ggmetro = ggplot(capmetro)
 ```
 
 ## Plot 1
+```{r, fig.height = 6, fig.width = 7}
+capmetro %>% group_by(hour_of_day, day_of_week, month) %>% summarize(average = mean(boarding), .groups = "drop_last") %>%  ggplot() + geom_line((aes(x=hour_of_day, y=average, col=month)), size = 1) + labs(x="Hour of day (0-23)", y="Average total boardings", title = "Average boardings by hour") + facet_wrap(~day_of_week)
+```
+
 
 ## Plot 2
+```{r, fig.height=5, fig.width=7}
+ggmetro + geom_point((aes(x=temperature, y=boarding, fill=weekend)), pch=21, col = 'black') + labs(x="Temperature (Fahrenheit)", y="Total boardings", title = "CapMetro boardings vs. temperature") + facet_wrap(~hour_of_day)
+```
 
 # Problem 4
+```{r}
+billboard = read.csv("billboard.csv")
+```
 
 ## Part A
+```{r}
+topten = billboard %>% group_by(song, performer) %>% summarize(count = n(), .groups = 'drop_last') %>% arrange(desc(count))
+topten = topten[1:10,]
+knitr::kable(topten, caption = "Most popular songs by weeks on Billboard Top 100")
+```
 
 ## Part B
 
