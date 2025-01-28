@@ -1,6 +1,7 @@
 ---
 title: 'Homework #2'
 author: "Advay Vyas"
+date: 1/27/25
 output:
   pdf_document:
     toc: true
@@ -83,7 +84,7 @@ bikes %>% filter(hr == 9) %>% group_by(hr, workingday, weathersit) %>% summarize
 ```
 This bar graph represents average total bike rentals during 9 A.M, organized by a x-axis of weather intensity and split into non-working days (left) and working days (right). For the weather intensity, 1 indicates clear weather and few clouds, 2 indicates mist and clouds, 3 indicates light rain or thunderstorms, and 4 (not present in data-set) indicates heavy rain, snow, or thunderstorms.
 
-On the non-working day bar graph (left), there is a small decrease when weather intensifies from intensity 1 to 2. When the weather intensifies further to intensity 3, there is a large decrease in bike rentals. On the other hand, the working day bar graph (right) has almost no decrease from intensity 1 to intensity 2 and a large yet proportionally smaller decrease from intensity 2 to intensity 3. This might be due to workers having to be attendant at work regardless of low to moderate weather conditions, while non-working days not having the same stringent requirements. Therefore, we can likely assume that weather conditions have a larger effect on average bike rentals at 9 A.M. if it is a working day.
+On the non-working day bar graph (left), there is a small decrease when weather intensifies from intensity 1 to 2. When the weather intensifies further to intensity 3, there is a large decrease in bike rentals. On the other hand, the working day bar graph (right) has almost no decrease from intensity 1 to intensity 2 and a large yet proportionally smaller decrease from intensity 2 to intensity 3. This might be due to workers having to be attendant at work regardless of low to moderate weather conditions, while non-working days might not have the same stringent requirements. Therefore, we can likely assume that weather conditions have a larger effect on average bike rentals at 9 A.M. if it is a working day.
 
 
 # Problem 3
@@ -101,14 +102,17 @@ ggmetro = ggplot(capmetro)
 
 ## Plot 1
 ```{r, fig.height = 6, fig.width = 7}
-capmetro %>% group_by(hour_of_day, day_of_week, month) %>% summarize(average = mean(boarding), .groups = "drop_last") %>%  ggplot() + geom_line((aes(x=hour_of_day, y=average, col=month)), size = 1) + labs(x="Hour of day (0-23)", y="Average total boardings", title = "Average boardings by hour") + facet_wrap(~day_of_week)
+capmetro %>% group_by(hour_of_day, day_of_week, month) %>% summarize(average = mean(boarding), .groups = "drop_last") %>% ggplot() + geom_line((aes(x=hour_of_day, y=average, col=month)), size = 1) + labs(x="Hour of day (0-23)", y="Average total boardings", title = "Average boardings by hour", col = "Month") + facet_wrap(~day_of_week)
 ```
-
+This line graph tracks average boardings by hour for every day of the week, with each month having its colored line. The hours of boarding is similar every weekday, even on Fridays. A simple trend to see is that weekdays have significantly more boardings than weekends, maybe because most students would prefer to stay home or use personal vehicles. The months usually have similar lines for every day, except for a couple of key exceptions. There is a clear decrease in Mondays in September (red line), likely due to Labor Day lowering the average. In addition, the November line (blue) is lower on Wednesday, Thursday, and Friday - likely due to Thanksgiving Day. In conclusion, this plot shows major trends across days, hours, and months.
 
 ## Plot 2
 ```{r, fig.height=5, fig.width=7}
-ggmetro + geom_point((aes(x=temperature, y=boarding, fill=weekend)), pch=21, col = 'black') + labs(x="Temperature (Fahrenheit)", y="Total boardings", title = "CapMetro boardings vs. temperature by hour of day") + facet_wrap(~hour_of_day)
+ggmetro + geom_point((aes(x=temperature, y=boarding, fill=weekend)), pch=21, col = 'black') + labs(x="Temperature (Fahrenheit)", y="Total boardings", title = "CapMetro boardings vs. temperature by hour of day", fill = "Weekend") + facet_wrap(~hour_of_day)
 ```
+This scatter plot represents the total boardings (y-axis) as temperature (x-axis) increases. The plot is also split into 16 different plots for 16 different hours of the day, as well as coloring weekday and weekend data points differently. For most if not all of the hour plots, there seems to be no correlation between boardings and temperature. This logic largely follows for the subcategories of weekend and weekday - regardless of other factors, temperature never seems to have a noticeable effect on student ridership. While this may be concerning, we can likely assume that students plan to attend class regardless of different yet not extreme temperature.
+
+\pagebreak
 
 # Problem 4
 ```{r}
@@ -122,13 +126,21 @@ topten = topten[1:10,]
 knitr::kable(topten, caption = "Most popular songs by weeks on Billboard Top 100", col.names = c("Song", "Performer", "Weeks"))
 ```
 
+This table shows the top ten most popular songs ranked in descending order by the number of weeks (non-consecutive) in the Billboard Top 100. "Radioactive" by Imagine Dragons has the most weeks by far (8 weeks over second place), and then the rest of the songs follow in close fashion until "Before He Cheats" by Carrie Underwood with 64 weeks on the Billboard Top 100. This list was slightly surprising but still makes sense.
+
+\pagebreak
+
 ## Part B
 ```{r}
 unique(billboard[,c(5,12)]) %>% filter(year != 2021 & year!= 1958) %>% group_by(year) %>% summarize(count = n(), .groups = 'drop_last') %>% ggplot() + geom_line(aes(x=year, y=count), size = 1) + labs(x="Year", y="Unique songs", title = "Unique songs on the Billboard Top 100 by year")
 
 ```
+This line graphs plots the amount of unique songs on the Billboard Top 100 as time goes on (years). Curiously, there seems to be a spike in unique songs around 1970, which might be because of a massive rise in accessibility. Notably, the "album era" and rock & roll were prominent during that time. Next, the amount of unique songs sees another decline until the 2000s, where is increases at 2010, sinks, and then sharply increases until present time. It's likely that the 2010s increased unique songs because of online music streaming services like Pandora or Spotify making more obscure songs available. In addition, the late 2010s increase could be attributed to social media's growing prevalence in the modern day as a music distributor. For example, TikTok, Instagram, and Facebook bring music to everywhere fast nowadays. In conclusion, this graph is very interesting and might tell a story of accessibility in music.
+
 ## Part C
 ```{r, fig.width = 7}
 billboard %>% group_by(song, performer) %>% summarize(weeks = n(), .groups = 'drop_last') %>% filter(weeks >= 10) %>% group_by(performer) %>% summarize(count = n(), .groups = 'drop_last') %>% filter(count >= 30) %>% arrange(desc(count)) %>% ggplot() + geom_col((aes(x=reorder(performer, -count), y=count)), fill = 'skyblue', col='black') + labs(x="Artist", y="Ten-week hits", title = "Ten-week Billboard Top 100 hits by artist") + theme(axis.text.x = element_text(angle=45, size = 9, color = "black", face = "plain", vjust = 1, hjust = 1))
 
 ```
+This bar graph represents artists (x-axis) in descending order by ten-week hits (y-axis). Ten-week hits are defined as a song that appeared on the Billboard Top 100 for at least ten weeks. For example, Elton John has over 50 ten-week hits. This bar graph is populated with famous names such as Drake, Taylor Swift, and Michael Jackson - following with what the general reader would predict. 
+
